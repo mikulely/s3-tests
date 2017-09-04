@@ -9298,3 +9298,48 @@ def test_delete_tags_obj_public():
     tags = _get_obj_tags(bucket, key.name)
     eq(len(tags),0)
     #eq(input_tagset, res_tagset)
+
+
+@attr(resource='object')
+@attr(method='put')
+@attr(operation='Test put object upload with explicit storage class')
+@attr(assertion='success')
+@attr('storage_class')
+@attr('set_storage_class')
+def test_put_obj_with_storage_class():
+
+@attr(resource='object')
+@attr(method='post')
+@attr(operation='Test post object upload with explicit storage class')
+@attr(assertion='success')
+@attr('storage_class')
+@attr('set_storage_class')
+def test_post_obj_with_storage_class():
+
+@attr(resource='object')
+@attr(method='put')
+@attr(operation='check multipart obj upload with explicit storage class')
+@attr(assertion='success')
+@attr('storage_class')
+@attr('set_storage_class')
+def test_multipart_upload_with_storage_class():
+    bucket = get_new_bucket()
+    key = "mymultipart"
+    (upload, data) = _multipart_upload(bucket, key, 0)
+    e = assert_raises(boto.exception.S3ResponseError, upload.complete_upload)
+    eq(e.status, 400)
+    eq(e.error_code, u'MalformedXML')
+
+@attr(resource='object')
+@attr(method='put')
+@attr(operation='copy object using different storage classes')
+@attr(assertion='works')
+@attr('change_storage_class')
+def test_copy_obj_using_diff_storage_class():
+    bucket = get_new_bucket()
+    key = bucket.new_key('foo123bar')
+    key.set_contents_from_string('foo')
+    key.copy(bucket, 'bar321foo')
+    key2 = bucket.get_key('bar321foo')
+    eq(key2.get_contents_as_string(), 'foo')
+
